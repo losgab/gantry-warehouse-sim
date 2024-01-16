@@ -22,7 +22,7 @@ void loop() {
   buttonGood.update_button();
 
   if (buttonGood.is_pressed()) {
-    stepper.moveTo(1000);
+    stepper.runSpeed();
   } else {
     Serial.println("was NOT PUSHED");
   }

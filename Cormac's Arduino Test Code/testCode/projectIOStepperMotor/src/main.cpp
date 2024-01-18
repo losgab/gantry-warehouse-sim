@@ -5,10 +5,11 @@
 int buttonState = 0;
 #define stepPin 8
 #define directionPin 9
+#define numberOfSteps 200
 AccelStepper stepper(AccelStepper::DRIVER, stepPin, directionPin);
 Button buttonGood(buttonPin, true);
 // put function declarations here:
-int myFunction(int, int);
+void rotateAngle(AccelStepper stepper, float angle);
 
 void setup() {
   Serial.begin(9600);
@@ -22,7 +23,7 @@ void loop() {
   buttonGood.update_button();
 
   if (buttonGood.is_pressed()) {
-    stepper.runSpeed();
+    rotateAngle(stepper, 180.0);
   } else {
     Serial.println("was NOT PUSHED");
   }
@@ -30,6 +31,11 @@ void loop() {
 }
 
 // put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+// rounds to the nearest angle in steps (to the even number if halfway)
+void rotateAngle(AccelStepper stepper, float angle) {
+  int stepsToTake = round(angle / 360 * numberOfSteps);
+  stepper.move(stepsToTake);
+  for(int i = 0; i < stepsToTake; i++) {
+    stepper.run();
+  } 
 }

@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 #include <Button.h>
-#include "stepper.h"
+#include "gstepper.h"
 
 #define SYS_DELAY(x) vTaskDelay(pdMS_TO_TICKS(x))
 
@@ -36,14 +36,15 @@ void app_main()
     i2c_param_config(I2C_MASTER_PORT, &config);
     i2c_driver_install(I2C_MASTER_PORT, config.mode, BUF_SIZE, BUF_SIZE, 0);
 
-    float target_angle = 0, stepper_angle = 0;
+    float stepper_angle = 0, steps = 0;
     while (1)
     {   
         SYS_DELAY(5000);
-        for (uint8_t i = 0; i < 181; i++)
+        for (uint8_t i = 0; i < 91; i++)
         {
-            stepper_angle = convert_to_gstepper_angle(target_angle, 0.01);
-            printf();
+            stepper_angle = convert_to_gstepper_angle(i, HALF_STEP_RESOLUTION);
+            steps = gstepper_angle_steps_required(stepper_angle, HALF_STEP_RESOLUTION);
+            printf("[TEST]: Target Angle: %d | Stepper Angle: %.1f | Error: %.1f\n", i, stepper_angle, steps);
         }
     }
 }

@@ -12,7 +12,7 @@ QUARTER_STEP_RESOLUTION = 0.45
 # Error can be mapped to the modulus of the target angle
 # When error < 4, error is negative
 # When error > 4, error is positive
-hard_map = [0, 0.1, 0.2, 0.3, 0.4]
+hard_map = [0, -0.1, -0.2, -0.3, -0.4, 0.4, 0.3, 0.2, 0.1]
 
 def round_to_stepper_res(angle: float, step_resolution: float) -> float:
     rounded = round(angle / step_resolution) * step_resolution
@@ -25,14 +25,13 @@ def degree_error(angle, stepper_angle):
     return (angle - stepper_angle)
 
 def convert_stepper_angle(target_angle: int, step_resolution: float) -> float:
-    mod = target_angle % 9
-    error = -hard_map[mod] if mod < 5 else hard_map[9 - mod]
+    error = hard_map[target_angle % 9]
     return target_angle + error
 
 print("---------------------------")
 for i in range(0, 91, 1):
     converted_angle = convert_stepper_angle(i, HALF_STEP_RESOLUTION)
-    # print(f"Target Angle: {int(i)} | Converted Angle: {converted_angle}")
+    print(f"Target Angle: {int(i)} | Converted Angle: {converted_angle}")
 #     stepper_angle = round_to_stepper_res(i)
     steps_required = steps_req(converted_angle)
     error = degree_error(i, converted_angle)

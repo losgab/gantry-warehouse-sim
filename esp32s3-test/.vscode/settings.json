@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "compare": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "gstepper.h": "c"
     }
 }

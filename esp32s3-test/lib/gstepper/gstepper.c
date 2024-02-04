@@ -1,18 +1,24 @@
 #include "gstepper.h"
 
-esp_err_t gstepper_init(gstepper_t stepper)
+esp_err_t gstepper_init(gstepper_t stepper, gpio_num_t step_pin, gpio_num_t dir_pin, float step_resolution)
 {
+    stepper = malloc(sizeof(gstepper));
+
+    stepper->step_pin = step_pin;
+    stepper->dir_pin = dir_pin;
+    stepper->step_resolution = 0.9;
+    stepper->curr_pos = 0;
+    stepper->target_pos = 0;
+    stepper->pos_error = 0;
     return ESP_OK;
 }
 
 float convert_to_gstepper_angle(int target_angle, float step_resolution)
 {
-    uint8_t mod = target_angle % 9;
-    float error = (mod > 5) ? -error[mod] : error[9 - mod];
-    return target_angle + error
+    return (target_angle + error[target_angle % 9]);
 }
 
 float gstepper_angle_steps_required(float converted_gstepper_angle, float step_resolution)
 {
-    return (float)(((uint16_t)((converted_gstepper_angle / step_resolution) * 10)) / 10);
+    return (unsigned int)(converted_gstepper_angle / step_resolution);
 }
